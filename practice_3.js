@@ -8,6 +8,8 @@ let fileName = prompt("Enter Your filename: ");
 
 const data = fs.readFileSync(`${fileName}`, "utf-8");
 
-const dataObj = JSON.parse(data);
+// const dataObj = JSON.parse(data);
 
-console.log(dataObj);
+// console.log(dataObj);
+
+console.log(data);

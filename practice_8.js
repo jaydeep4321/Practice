@@ -1,54 +1,43 @@
 // Database Connection: Create a program that connects to a
 // database like MongoDB or MySQL and retrieves data from it.
-const fs = require("fs");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const User = require("./userModel");
 
-dotenv.config({ path: "./config.env" });
+const { MongoClient } = require("mongodb");
 
-// const DB = process.env.DATABASE_LOCAL;
+async function main() {
+  const uri = "mongodb://jd:root@localhost:27017/?authMechanism=DEFAULT";
 
-const DB = process.env.DATABASE_LOCAL.replace(
-  "<PASSWORD>",
-  process.env.DATABASE_PASSWORD
-);
+  const client = new MongoClient(uri);
 
-mongoose.connect(DB).then(() => console.log("DB connection successful!"));
-
-const users = JSON.parse(fs.readFileSync(`users.json`, "utf-8"));
-
-// IMPORT DATA INTO DB
-const importData = async () => {
   try {
-    await User.create(users, { validateBeforeSave: false });
+    await client.connect();
+    console.log("DB connected");
 
-    console.log("Data successfully loaded!");
-  } catch (err) {
-    console.log(err);
+    //fetch data:
+    // await findOneListingByName(client, "Infinite Views");
+    await findOneListingByName(client, "The Forest Hiker");
+  } catch (e) {
+    console.error(e);
   }
-  process.exit();
-};
 
-// DELETE ALL DATA FROM DB
-const deleteData = async () => {
-  try {
-    await User.deleteMany();
-
-    console.log("Data successfully deleted!");
-  } catch (err) {
-    console.log(err);
-  }
-  process.exit();
-};
-
-if (process.argv[2] === "--import") {
-  importData();
-} else if (process.argv[2] === "--delete") {
-  deleteData();
+  //   finally {
+  //     await client.close();
+  //   }
 }
 
-console.log(process.argv);
+main().catch(console.error);
 
-//node dev-data/data/import-dev-data.js --import
-// node dev-data/data/import-dev-data.js --delete
+async function findOneListingByName(client, nameOfListing) {
+  const result = await client
+    .db("jaydeepdb")
+    .collection("tour")
+    .findOne({ name: nameOfListing });
+
+  if (result) {
+    console.log(
+      `Found a listing in the collection with the name '${nameOfListing}':`
+    );
+    console.log(result);
+  } else {
+    console.log(`No listings found with the name '${nameOfListing}'`);
+  }
+}

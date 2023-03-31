@@ -1,39 +1,39 @@
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
 const prompt = require("prompt-sync")();
 
-//----- This for reading a single line------//
+const nodemailer = require("nodemailer");
 
-// const readline = require("readline").createInterface({
-//   input: process.stdin,
-//   output: process.stdout,
-// });
+let transport = nodemailer.createTransport({
+  // host: "smtp.mailtrap.io",
+  // port: 2525,
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_USERNAME,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 
-// readline.question("Who are you?", (name) => {
-//   console.log(`Hey there ${name}!`);
-//   readline.close();
-// });
+console.log("-------------Enter below details for sending mail--------------");
 
-let number1 = prompt("Enter first number: ");
-number1 = Number(number1);
-let number2 = prompt("Enter second number: ");
-number2 = Number(number2);
+let from = prompt("From: ");
+let to = prompt("To: ");
+let subject = prompt("Subject: ");
+let text = prompt("message: ");
 
-// let option = [1, 2, 3, 4];
-console.log("---------Select Opration----------- \n");
-console.log("1. Sum\n");
-console.log("2. Subtraction\n");
-console.log("3. Multiplication\n");
-console.log("4. Division\n");
+const mailOptions = {
+  from,
+  to,
+  subject,
+  text,
+};
 
-let option = prompt("Enter you choice: ");
-option = Number(option);
-
-console.log("------------ Answer-------------");
-if (option === 1) {
-  console.log(`sum of two number: ${number1 + number2}`);
-} else if (option === 2) {
-  console.log(`subtraction of two number: ${number1 - number2}`);
-} else if (option === 3) {
-  console.log(`multiplication of two number: ${number1 * number2}`);
-} else if (option === 4) {
-  console.log(`division of two number: ${number1 / number2}`);
-}
+transport.sendMail(mailOptions, function (err, info) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(info);
+  }
+});
