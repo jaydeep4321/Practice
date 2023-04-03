@@ -29,7 +29,7 @@ const Book = require("./bookModel");
 //     console.error("Unable to create table : ", error);
 //   });
 
-//for fetching all data
+// for fetching all data
 sequelize
   .sync()
   .then(() => {
