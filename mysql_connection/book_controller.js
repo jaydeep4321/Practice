@@ -30,21 +30,17 @@ const Book = require("./bookModel");
 //   });
 
 // for fetching all data
-sequelize
-  .sync()
-  .then(() => {
-    Book.findAll()
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.error("Failed to retrieve data : ", error);
-      });
-  })
-  .catch((error) => {
-    console.error("Unable to create table : ", error);
-  });
 
+async function allBook() {
+  try {
+    const book = await Book.findAll();
+    console.log(book);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+allBook();
 // findOne
 // sequelize
 //   .sync()
